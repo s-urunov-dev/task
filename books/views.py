@@ -83,7 +83,7 @@ class AdminStatsView(APIView):
         })
 
 
-@extend_schema(tags=['Auth'])
+@extend_schema(tags=['Register'])
 class RegisterView(GenericAPIView):
     serializer_class = RegisterSerializer
 
@@ -94,19 +94,19 @@ class RegisterView(GenericAPIView):
         return Response({"message": f"Created user successfully."})
 
 
-@extend_schema(tags=['Token'])
+@extend_schema(tags=['Login'])
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-@extend_schema(tags=['Token'])
+@extend_schema(tags=['Login'])
 class CustomTokenRefreshView(TokenRefreshView):
     pass
 
 
 @extend_schema(tags=['Block'])
 class BlockUnblockUserView(GenericAPIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = IsAdminUser,
     serializer_class = UserActionSerializer
 
     def post(self, request, *args, **kwargs):
@@ -140,7 +140,7 @@ class BlockUnblockUserView(GenericAPIView):
 @extend_schema(tags=['Order'])
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = IsAuthenticated,
 
     def get_queryset(self):
         user = self.request.user
@@ -156,7 +156,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 @extend_schema(tags=['Invoice'])
 class InvoiceViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = InvoiceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = IsAuthenticated,
 
     def get_queryset(self):
         return Invoice.objects.filter(order__user=self.request.user).order_by('-issued_at')
@@ -165,7 +165,7 @@ class InvoiceViewSet(viewsets.ReadOnlyModelViewSet):
 @extend_schema(tags=['Payment'])
 class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = IsAuthenticated,
 
     def get_queryset(self):
         return Payment.objects.filter(invoice__order__user=self.request.user).order_by('-paid_at')

@@ -6,4 +6,4 @@ user:
 	python3 manage.py createsuperuser
 
 load:
-	python3 manage.py loaddata users books
+	python3 manage.py loaddata books
